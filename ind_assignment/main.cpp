@@ -128,6 +128,11 @@ void changeCourseMax(string rest_of_line){
 	for(list<Course*>::iterator it = list_of_courses.begin(); it != list_of_courses.end(); it++){
 		if(temp_course_id == (*it)->returnCourseID()) {
 			(*it)->newMaxEnrollment(temp_new_enrollment);
+			if(!(*it)->students_on_waitlist.empty()
+				&& ((*it)->returnMaxEnrollment() > (*it)->students_enrolled.size())){
+					(*it)->students_enrolled.push_back((*it)->students_on_waitlist.front());
+					(*it)->students_on_waitlist.pop_front()
+			}
 		}
 	}
 }
@@ -157,6 +162,30 @@ void placeStudentInCourse(string rest_of_line){
 	}
 }
 
+
+void dropStudentFromCourse(line){
+	istringstream iss(rest_of_line,istringstream::out);
+	int temp_course_id, temp_student_id;
+	iss>>temp_course_id>>temp_student_id;
+	Course * temp_course_ptr;
+	Student * temp_student_ptr;
+	for(list<Course*>::iterator it = list_of_courses.begin(); it != list_of_courses.end(); it++){
+		if(temp_course_id == (*it)->returnCourseID()) {
+			temp_course_ptr = (*it);
+		}
+	}
+	for(list<Student*>::iterator it = list_of_students.begin(); it != list_of_students.end(); it++){
+		if(temp_student_id == (*it)->returnStudentID()) {
+			temp_student_ptr = (*it);
+		}
+	}
+	if(){
+		
+	} else {
+		
+	}
+}
+
 int main(){
 	string command_letter;
 	string line;
@@ -172,7 +201,7 @@ int main(){
 		} else if (command_letter=="A"){
 			placeStudentInCourse(line);
 		} else if (command_letter=="D"){
-			//dropStudentFromCourse(line);
+			dropStudentFromCourse(line);
 		} else if (command_letter=="PS"){
 			//printStudentCourses(line);
 		} else if (command_letter=="PC"){
