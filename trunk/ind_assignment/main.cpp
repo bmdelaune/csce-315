@@ -148,7 +148,13 @@ void placeStudentInCourse(string rest_of_line){
 			temp_student_ptr = (*it);
 		}
 	}
-	if(temp_course_ptr->returnMaxEnrollment() <= temp_course_ptr->
+	if(temp_course_ptr->returnMaxEnrollment() > temp_course_ptr->students_enrolled.size()){
+		temp_course_ptr->students_enrolled.push_back(temp_student_ptr);
+		temp_student_ptr->courses_enrolled.push_back(temp_course_ptr);
+	} else {
+		temp_course_ptr->students_on_waitlist.push_back(temp_student_ptr);
+		temp_student_ptr->courses_waitlisted.push_back(temp_course_ptr);
+	}
 }
 
 int main(){
