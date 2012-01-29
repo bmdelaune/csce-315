@@ -58,6 +58,9 @@ public:
 	int returnStudentID(){
 		return student_id;
 	}
+	string returnStudentName(){
+		return student_name;
+	}
 	friend ostream& operator<<(ostream& stream,Student output);
 };
 
@@ -89,6 +92,7 @@ public:
 	int returnMaxEnrollment() {
 		return max_enrollment;
 	}
+	friend ostream& operator<<(ostream& stream,Course output);
 };
 
 ostream &operator<<(ostream &stream, Student output) {
@@ -110,17 +114,31 @@ ostream &operator<<(ostream &stream, Student output) {
 	return stream; 
 }
 
+ostream &operator<<(ostream &stream, Course output) {
+	stream<<"=========Courses Information========"<<endl
+		<<"= Student ID: "<<output.course_id<<endl
+		<<"= Name: "<<output.course_name<<endl
+		<<"= Max Enrollment: "<<output.max_enrollment<<endl
+		<<"------------------------------"<<endl
+		<<"Students:"<<endl;
+	for(list<Student*>::iterator it = output.students_enrolled.begin(); it != output.students_enrolled.end(); it++){
+		stream<<(*it)->returnStudentID()<<": "<<(*it)->returnStudentName()<<endl;
+	}
+	stream<<"------------------------------"<<endl
+		<<"Wait-list:"<<endl;
+	for(list<Student*>::iterator it = output.students_on_waitlist.begin(); it != output.students_on_waitlist.end(); it++){
+		stream<<(*it)->returnStudentID()<<": "<<(*it)->returnStudentName()<<endl;
+	}
+	stream<<"==================================="<<endl;
+	return stream; 
+}
+
 void addStudent(string rest_of_line){
 	istringstream iss(rest_of_line,istringstream::out);
 	int student_id;
 	string first_name, last_name, major;
 	iss>>student_id>>first_name>>last_name>>major;
 	list_of_students.push_back(new Student(student_id, first_name+" "+last_name, major));
-	cout<<"========Student Created========"<<endl
-		<<"= Student ID: "<<student_id<<endl
-		<<"= Name: "<<last_name<<", "<<first_name<<endl
-		<<"= Major: "<<major<<endl
-		<<"==============================="<<endl;
 }
 
 void addCourse(string rest_of_line){
@@ -137,11 +155,6 @@ void addCourse(string rest_of_line){
 	iss.getline(temp_name,course_name_length);
 	string course_name(temp_name);
 	list_of_courses.push_back(new Course(course_id, max_enrollment, course_name));
-	cout<<"=========Course Created========"<<endl
-		<<"= Course ID: "<<course_id<<endl
-		<<"= Max Enrollment: "<<max_enrollment<<endl
-		<<"= Course Name: "<<course_name<<endl
-		<<"==============================="<<endl;
 }
 
 void changeCourseMax(string rest_of_line){
@@ -156,6 +169,15 @@ void changeCourseMax(string rest_of_line){
 				Student * temp_student_ptr = (*it)->students_on_waitlist.front();
 				(*it)->students_enrolled.push_back(temp_student_ptr);
 				(*it)->students_on_waitlist.pop_front();
+				for(list<Course*>::iterator cit = temp_student_ptr->courses_waitlisted.begin();
+						cit!=temp_student_ptr->courses_waitlisted.end();
+						cit++) {
+					if(temp_course_id == (*cit)->returnCourseID()){
+						temp_student_ptr->courses_enrolled.push_back(*cit);
+						cit = temp_student_ptr->courses_waitlisted.erase(cit);
+					}
+				}
+				//(*temp_student_ptr)->courses_waitlisted
 				//Need to change student information
 			}
 		}
@@ -194,26 +216,41 @@ void dropStudentFromCourse(string rest_of_line){
 	iss>>temp_course_id>>temp_student_id;
 	Course * temp_course_ptr;
 	Student * temp_student_ptr;
-	for(list<Course*>::iterator it = list_of_courses.begin(); it != list_of_courses.end(); it++){
+	for(list<Course*>::iterator it = list_of_courses.begin();
+			it != list_of_courses.end(); it++){
 		if(temp_course_id == (*it)->returnCourseID()) {
 			temp_course_ptr = (*it);
 		}
 	}
-	for(list<Student*>::iterator it = list_of_students.begin(); it != list_of_students.end(); it++){
+	for(list<Student*>::iterator it = list_of_students.begin();
+			it != list_of_students.end(); it++){
 		if(temp_student_id == (*it)->returnStudentID()) {
 			temp_student_ptr = (*it);
 		}
 	}
 	for(list<Student*>::iterator it = temp_course_ptr->students_enrolled.begin();
-			it != list_of_students.end(); it++) {
+			it != temp_course_ptr->students_enrolled.end(); it++) {
 		if((*it)->returnStudentID() == temp_student_id){
 			temp_course_ptr->students_enrolled.erase(it);
 		}
 	}
-	if(true){
-		
-	} else {
-		
+	for(list<Student*>::iterator it = temp_course_ptr->students_on_waitlist.begin();
+			it != temp_course_ptr->students_on_waitlist.end(); it++) {
+		if((*it)->returnStudentID() == temp_student_id){
+			temp_course_ptr->students_on_waitlist.erase(it);
+		}
+	}
+	for(list<Course*>::iterator it = temp_student_ptr->courses_enrolled.begin();
+			it != temp_student_ptr->courses_enrolled.end(); it++) {
+		if((*it)->returnCourseID() == temp_course_id){
+			temp_student_ptr->courses_enrolled.erase(it);
+		}
+	}
+	for(list<Course*>::iterator it = temp_student_ptr->courses_waitlisted.begin();
+			it != temp_student_ptr->courses_waitlisted.end(); it++) {
+		if((*it)->returnCourseID() == temp_course_id){
+			temp_student_ptr->courses_waitlisted.erase(it);
+		}
 	}
 }
 
@@ -227,7 +264,20 @@ void printStudentCourses(string rest_of_line){
 			temp_student_ptr = (*it);
 		}
 	}
-	cout<<"Student"<<endl<<temp_student_ptr;
+	cout<<(*temp_student_ptr)<<endl;
+}
+
+void printCourseEnrollment(string rest_of_line){
+	istringstream iss(rest_of_line,istringstream::out);
+	int temp_course_id;
+	iss>>temp_course_id;
+	Course * temp_course_ptr;
+	for(list<Course*>::iterator it = list_of_courses.begin(); it != list_of_courses.end(); it++){
+		if(temp_course_id == (*it)->returnCourseID()) {
+			temp_course_ptr = (*it);
+		}
+	}
+	cout<<(*temp_course_ptr)<<endl;
 }
 
 int main(){
@@ -249,7 +299,7 @@ int main(){
 		} else if (command_letter=="PS"){
 			printStudentCourses(line);
 		} else if (command_letter=="PC"){
-			//printCourseEnrollment(line);
+			printCourseEnrollment(line);
 		} else {
 			return 1;
 		}
