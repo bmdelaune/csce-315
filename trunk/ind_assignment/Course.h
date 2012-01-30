@@ -14,14 +14,27 @@ Course class used to define courses and hold their enrollment information
 #ifndef _COURSE_H
 #define _COURSE_H
 
+/***********************************
+INCLUDES
+***********************************/
 #include "Student.h"
 #include <list>
 #include <string>
 
 using namespace std;
 
+/***********************************
+DECLARATIONS
+***********************************/
 class Student;
 
+/***********************************
+COURSE CLASS
+Best way to store information about each class.
+Includes basic variables to store information and two lists to store student
+information.  Because they are lists of pointers, they do not take up much room.
+and keep the class small.
+***********************************/
 class Course {
 	int course_id;
 	int max_enrollment;

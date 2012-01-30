@@ -14,14 +14,26 @@ Student Class for holding student and enrollment information.
 #ifndef _STUDENT_H 
 #define _STUDENT_H 
 
+/***********************************
+INCLUDES
+***********************************/
 #include "Course.h"
 #include <list>
 #include <string>
 
 using namespace std;
 
+/***********************************
+DECLARATIONS
+***********************************/
 class Course;
 
+/***********************************
+STUDENT CLASS
+Easiest way to store student information all together.
+Uses variables for basic information and has two lists to keep track of
+courses in which the student is enrolled and those which he is waitlisted for.
+***********************************/
 class Student {
 	int student_id;
 	string student_name;

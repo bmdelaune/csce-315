@@ -11,6 +11,9 @@ main.cpp
 
 Contains the main() as well as well as global definitions.
 *******************************************************************************/
+/***********************************
+INCLUDES
+***********************************/
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -20,6 +23,9 @@ Contains the main() as well as well as global definitions.
 
 using namespace std;
 
+/***********************************
+DECLARATIONS
+***********************************/
 extern list<Student*> list_of_students;
 extern list<Course*> list_of_courses;
 
@@ -31,6 +37,12 @@ void dropStudentFromCourse(string);
 void printStudentCourses(string);
 void printCourseEnrollment(string);
 
+/***********************************
+MAIN
+-easiest way to pull in commands was getline()
+-"else if" worked better than "switch case"
+-each action has a function to perform that action
+***********************************/
 int main(){
 	string command_letter;
 	string line;

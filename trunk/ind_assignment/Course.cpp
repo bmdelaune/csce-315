@@ -11,6 +11,10 @@ Course.cpp
 
 All Course class member function definitions
 *******************************************************************************/
+
+/***********************************
+INCLUDES
+***********************************/
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -20,18 +24,19 @@ All Course class member function definitions
 
 using namespace std;
 
+/***********************************
+COURSE MEMBER FUNCTIONS
+used to return information and change private information.
+***********************************/
 void Course::newMaxEnrollment(int new_enrollment){
 	max_enrollment = new_enrollment;
 }
-
 int Course::returnCourseID() {
 	return course_id;
 }
-
 string Course::returnCourseName() {
 	return course_name;
 }
-
 int Course::returnMaxEnrollment() {
 	return max_enrollment;
 }

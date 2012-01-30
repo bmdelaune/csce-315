@@ -11,6 +11,10 @@ Student.cpp
 
 Member functions of the Student Class
 *******************************************************************************/
+
+/***********************************
+INCLUDES
+***********************************/
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -20,18 +24,25 @@ Member functions of the Student Class
 
 using namespace std;
 
+/***********************************
+MEMBER FUNCTIONS
+***********************************/
+/*
+return information for public use
+*/
 int Student::returnStudentID(){
 	return student_id;
 }
-
 string Student::returnStudentName(){
 	return student_name;
 }
-
 string Student::returnStudentMajor(){
 	return student_major;
 }
 
+/*
+makes student information output uniform
+*/
 ostream &operator<<(ostream &stream, Student output) {
 	stream<<"========Student Information========"<<endl
 		<<"= Student ID: "<<output.student_id<<endl
